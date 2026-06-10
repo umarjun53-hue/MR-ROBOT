@@ -53,8 +53,8 @@ Confirm: ********
 | `download <#>` | Decrypt & download file by number |
 | `delete <#>` | Delete a file from vault |
 | `shred <#>` | Secure 3-pass overwrite + delete |
-| `list` or `files` | List all encrypted vault files |
-| `search <query>` | Search vault files by name |
+| `vault` | List all encrypted vault files |
+| `search <query>` | Search files in vault |
 | `info <#>` | Show file details |
 
 ### Navigation
@@ -99,7 +99,7 @@ alice@mrrobot > upload secret.pdf
 [+] 2.1 MB → 2.1 MB
 
 # List vault contents
-alice@mrrobot > list
+alice@mrrobot > vault
   #  FILENAME                           SIZE        STORED
   1  secret.pdf                         2.1 MB      2026-06-09 20:30
 

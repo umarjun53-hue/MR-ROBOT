@@ -108,8 +108,13 @@ def show_logo():
 ╚═╝     ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝   ╚═╝
           [ SECURE ENCRYPTED STORAGE — NO BROWSER ]""", style="bold green") if console else print("MR ROBOT v2.1")
 
-def show_ls(path=None):
-    p = Path(path) if path else Path.cwd()
+def show_ls(path=None, workdir=None):
+    if path:
+        p = Path(path)
+    elif workdir:
+        p = Path(workdir)
+    else:
+        p = Path.cwd()
     if not p.exists(): pl(f"  [-] Not found: {p}", style="red"); return
     try: entries = sorted(p.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower()))
     except PermissionError: pl("  [-] Permission denied.", style="red"); return
@@ -150,7 +155,7 @@ def show_help():
   upload <name>     Upload & encrypt (from current dir)
   download <#>      Decrypt & download a file
   delete <#>        Delete a file
-  search <query>    Search vault files
+  search <query>    Search files in vault
   info <#>          File details
   storage           Vault statistics
   nodes             Storage nodes
@@ -220,7 +225,7 @@ class App:
                     if not inp: continue
                     parts = inp.split(); cmd, args = parts[0].lower(), parts[1:]
 
-                    if cmd=="ls": show_ls(args[0] if args else None)
+                    if cmd=="ls": show_ls(args[0] if args else None, self.workdir)
                     elif cmd=="upload":
                         if not args: pl("[-] Usage: upload <filename>","red"); continue
                         fn=" ".join(args); fp=self.wd/fn
@@ -270,7 +275,7 @@ class App:
                             for _ in range(3): vp.write_bytes(secrets.token_bytes(sz)); os.sync()
                             vp.unlink()
                         self.vault.delete(m[0]["id"]); ss(f"[+] Shredding {m[0]['name']}...",d=0.03,style="red"); pl("[+] 3-pass overwrite + deleted.","green")
-                    elif cmd in ("list","files"): show_vault(self.vault.ls())
+                    elif cmd=="vault": show_vault(self.vault.ls())
                     elif cmd=="search":
                         if not args: pl("[-] Usage: search <query>","red"); continue
                         r=self.vault.search(" ".join(args)); show_vault(r) if r else pl("[-] No results.","dim")
